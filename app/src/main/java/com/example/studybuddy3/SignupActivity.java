@@ -252,11 +252,38 @@ public class SignupActivity extends AppCompatActivity {
             User user = new User(userId, email, hashedPassword);
             user.setEnrolledCourses(selectedCourses);
 
+            // Save user data
             mDatabase.child("users").child(userId)
                     .setValue(user)
                     .addOnCompleteListener(task -> {
                         showProgress(false);
                         if (task.isSuccessful()) {
+                            // Update each selected course with the new user's ID
+                            for (String courseId : selectedCourses) {
+                                DatabaseReference courseRef = mDatabase.child("courses").child(courseId).child("enrolledUserIds");
+                                courseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        List<String> enrolledUserIds = (List<String>) snapshot.getValue();
+                                        if (enrolledUserIds == null) {
+                                            enrolledUserIds = new ArrayList<>();
+                                        }
+                                        enrolledUserIds.add(userId);
+
+                                        // Update the course with the new enrolledUserIds list
+                                        courseRef.setValue(enrolledUserIds);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        Toast.makeText(SignupActivity.this,
+                                                "Failed to enroll in course: " + courseId,
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+
+                            // Save user session and navigate to MainActivity
                             saveUserSession(userId, email);
                             Toast.makeText(SignupActivity.this,
                                     "Registration successful", Toast.LENGTH_SHORT).show();

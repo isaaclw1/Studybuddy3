@@ -103,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
                                     // Save user session
                                     saveUserSession(user.getUserId(), user.getEmail());
                                     // Navigate to main activity
-                                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                    startActivity(new Intent(LoginActivity.this, PostLoginActivity.class));
                                     finish();
                                     break;
                                 }
