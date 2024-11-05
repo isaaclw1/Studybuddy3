@@ -1,4 +1,4 @@
-package com.example.studybuddy3;
+package com.example.studybuddy3.datatype;
 
 public class Resource {
     private String resourceId;

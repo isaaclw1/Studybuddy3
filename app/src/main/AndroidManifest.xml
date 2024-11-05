@@ -14,7 +14,7 @@
         tools:targetApi="31">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".loginsignup.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,12 +23,12 @@
         </activity>
 
         <activity
-            android:name=".SignupActivity"
+            android:name=".loginsignup.SignupActivity"
             android:exported="true">
         </activity>
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".loginsignup.LoginActivity"
             android:exported="true">
         </activity>
 
@@ -41,6 +41,18 @@
             android:name=".HomeActivity"
             android:exported="true">
         </activity>
+
+        <activity
+            android:name=".UserGroupActivity"
+            android:exported="true">
+        </activity>
+
+        <activity
+            android:name=".AddGroupActivity"
+            android:exported="true">
+        </activity>
+
+
 
     </application>
 

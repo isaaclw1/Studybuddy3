@@ -1,4 +1,4 @@
-package com.example.studybuddy3;
+package com.example.studybuddy3.datatype;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -9,6 +9,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.studybuddy3.datatype.User;
+import com.example.studybuddy3.loginsignup.LoginActivity;
+import com.example.studybuddy3.loginsignup.MainActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
