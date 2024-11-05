@@ -206,13 +206,22 @@ public class UserGroupActivity extends AppCompatActivity {
             StudyGroup group = groups.get(position);
             holder.groupNameText.setText(group.getGroupName());
 
+            // Set the visibility and functionality of the join button
             if (group.getMemberIds().contains(currentUserId)) {
                 holder.joinButton.setVisibility(View.GONE);
             } else {
                 holder.joinButton.setVisibility(View.VISIBLE);
                 holder.joinButton.setOnClickListener(v -> onJoinClicked.accept(group));
             }
+
+            // Set click listener on the entire item view to navigate to GroupActivity
+            holder.itemView.setOnClickListener(v -> {
+                Intent intent = new Intent(context, GroupActivity.class);
+                intent.putExtra("groupId", group.getGroupId());
+                context.startActivity(intent);
+            });
         }
+
 
         @Override
         public int getItemCount() {
