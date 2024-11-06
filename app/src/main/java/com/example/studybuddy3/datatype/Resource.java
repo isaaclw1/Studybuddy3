@@ -4,13 +4,27 @@ public class Resource {
     private String resourceId;
     private String name;
     private String description;
-    private String category;
-    private String url;
-    private String uploaderId;
+    private String category;    // e.g., "Lecture Notes", "Practice Exams", "Project Help"
+    private String fileUrl;     // URL to the stored file
+    private String uploaderId;  // ID of user who uploaded
     private long uploadTime;
+    private String sessionId;   // Reference to parent study session
 
+    // Required empty constructor for Firebase
     public Resource() {
-        // Required empty constructor for Firebase
+    }
+
+    // Full constructor
+    public Resource(String resourceId, String name, String description, String category,
+                    String fileUrl, String uploaderId, long uploadTime, String sessionId) {
+        this.resourceId = resourceId;
+        this.name = name;
+        this.description = description;
+        this.category = category;
+        this.fileUrl = fileUrl;
+        this.uploaderId = uploaderId;
+        this.uploadTime = uploadTime;
+        this.sessionId = sessionId;
     }
 
     // Getters and Setters
@@ -46,12 +60,12 @@ public class Resource {
         this.category = category;
     }
 
-    public String getUrl() {
-        return url;
+    public String getFileUrl() {
+        return fileUrl;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
     }
 
     public String getUploaderId() {
@@ -68,5 +82,13 @@ public class Resource {
 
     public void setUploadTime(long uploadTime) {
         this.uploadTime = uploadTime;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 }

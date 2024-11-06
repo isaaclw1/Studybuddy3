@@ -10,7 +10,6 @@ public class StudyGroup {
     private List<String> memberIds;  // List of user IDs
     private List<StudySession> sessions;
     private List<ChatMessage> messages;
-    private List<Resource> resources;
     private long createdAt;
 
     public StudyGroup() {
@@ -18,7 +17,6 @@ public class StudyGroup {
         this.memberIds = new ArrayList<>();
         this.sessions = new ArrayList<>();
         this.messages = new ArrayList<>();
-        this.resources = new ArrayList<>();
     }
 
     // Getters and Setters
@@ -68,14 +66,6 @@ public class StudyGroup {
 
     public void setMessages(List<ChatMessage> messages) {
         this.messages = messages;
-    }
-
-    public List<Resource> getResources() {
-        return resources;
-    }
-
-    public void setResources(List<Resource> resources) {
-        this.resources = resources;
     }
 
     public long getCreatedAt() {

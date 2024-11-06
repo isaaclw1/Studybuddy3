@@ -1,19 +1,38 @@
 package com.example.studybuddy3.datatype;
 
+// StudySession.java
 import java.util.ArrayList;
 import java.util.List;
 
 public class StudySession {
     private String sessionId;
     private String title;
-    private int dateTime;  // Store as hours (0 to 23)
-    private int endTime;   // Must be after dateTime and within the same day (0 to 23)
+    private long date;         // stored as milliseconds
+    private long startTime;    // stored as milliseconds
+    private long endTime;      // stored as milliseconds
     private String location;
     private List<String> attendeeIds;
+    private List<Resource> resources;
+    private String groupId;    // reference to parent group
 
+    // Required empty constructor for Firebase
     public StudySession() {
-        // Required empty constructor for Firebase
         this.attendeeIds = new ArrayList<>();
+        this.resources = new ArrayList<>();
+    }
+
+    // Full constructor
+    public StudySession(String sessionId, String title, long date, long startTime,
+                        long endTime, String location, String groupId) {
+        this.sessionId = sessionId;
+        this.title = title;
+        this.date = date;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.location = location;
+        this.groupId = groupId;
+        this.attendeeIds = new ArrayList<>();
+        this.resources = new ArrayList<>();
     }
 
     // Getters and Setters
@@ -33,30 +52,27 @@ public class StudySession {
         this.title = title;
     }
 
-    public int getDateTime() {
-        return dateTime;
+    public long getDate() {
+        return date;
     }
 
-    public void setDateTime(int dateTime) {
-        if (dateTime < 0 || dateTime > 23) {
-            throw new IllegalArgumentException("dateTime must be between 0 and 23.");
-        }
-        this.dateTime = dateTime;
-
-        // Reset endTime to ensure it's not before the new start time
-        if (this.endTime <= dateTime) {
-            this.endTime = dateTime + 1;  // Default to 1 hour after dateTime if endTime is invalid
-        }
+    public void setDate(long date) {
+        this.date = date;
     }
 
-    public int getEndTime() {
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
+    public long getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(int endTime) {
-        if (endTime <= dateTime || endTime > 23) {
-            throw new IllegalArgumentException("endTime must be greater than dateTime and within the range 0 to 23.");
-        }
+    public void setEndTime(long endTime) {
         this.endTime = endTime;
     }
 
@@ -74,5 +90,21 @@ public class StudySession {
 
     public void setAttendeeIds(List<String> attendeeIds) {
         this.attendeeIds = attendeeIds;
+    }
+
+    public List<Resource> getResources() {
+        return resources;
+    }
+
+    public void setResources(List<Resource> resources) {
+        this.resources = resources;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 }
