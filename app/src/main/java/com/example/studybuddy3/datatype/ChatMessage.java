@@ -1,6 +1,5 @@
 package com.example.studybuddy3.datatype;
 
-// ChatMessage.java
 public class ChatMessage {
     private String messageId;
     private String senderId;

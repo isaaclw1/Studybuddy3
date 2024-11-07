@@ -74,7 +74,7 @@ public class CalendarSessionActivity extends AppCompatActivity {
 
         resourcesButton.setOnClickListener(v -> {
             if (currentSession != null) {
-                Intent intent = new Intent(CalendarSessionActivity.this, ResourcesActivity.class);
+                Intent intent = new Intent(CalendarSessionActivity.this, ResourceActivity.class);
                 intent.putExtra("groupId", groupId);
                 intent.putExtra("sessionId", sessionId);
                 startActivity(intent);

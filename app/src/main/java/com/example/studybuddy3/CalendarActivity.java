@@ -63,7 +63,6 @@ public class CalendarActivity extends AppCompatActivity {
         setupCalendarView();
         setupRecyclerView();
         loadGroupData();
-        loadStudySessions();
     }
 
     private void initializeViews() {
@@ -106,6 +105,7 @@ public class CalendarActivity extends AppCompatActivity {
                         currentGroup = snapshot.getValue(StudyGroup.class);
                         if (currentGroup != null) {
                             groupNameText.setText(currentGroup.getGroupName());
+                            loadSessions(); // Load sessions after group data is loaded
                         }
                     }
 
@@ -118,7 +118,7 @@ public class CalendarActivity extends AppCompatActivity {
                 });
     }
 
-    private void loadStudySessions() {
+    private void loadSessions() {
         mDatabase.child("sessions").child(groupId)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
@@ -127,14 +127,14 @@ public class CalendarActivity extends AppCompatActivity {
 
                         for (DataSnapshot sessionSnapshot : snapshot.getChildren()) {
                             StudySession session = sessionSnapshot.getValue(StudySession.class);
-                            if (session != null && isValidSession(session)) {
+                            if (isValidSession(session)) {
                                 String dateKey = getDateKey(new Date(session.getDate()));
                                 sessionsByDate.computeIfAbsent(dateKey, k -> new ArrayList<>())
                                         .add(session);
                             }
                         }
 
-                        // Show sessions for current selected date
+                        // Show sessions for current date
                         showSessionsForDate(new Date(calendarView.getDate()));
                     }
 
@@ -148,7 +148,8 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
     private boolean isValidSession(StudySession session) {
-        return session.getSessionId() != null &&
+        return session != null &&
+                session.getSessionId() != null &&
                 session.getStartTime() < session.getEndTime() &&
                 session.getTitle() != null &&
                 !session.getTitle().isEmpty();
@@ -176,7 +177,7 @@ public class CalendarActivity extends AppCompatActivity {
         private List<StudySession> sessions = new ArrayList<>();
 
         public void setSessions(List<StudySession> sessions) {
-            this.sessions = sessions;
+            this.sessions = new ArrayList<>(sessions); // Create a new list to avoid reference issues
             notifyDataSetChanged();
         }
 
