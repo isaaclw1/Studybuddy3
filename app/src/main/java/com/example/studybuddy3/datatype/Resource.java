@@ -7,7 +7,6 @@ public class Resource {
     private String category;    // e.g., "Lecture Notes", "Practice Exams", "Project Help"
     private String fileUrl;     // URL to the stored file
     private String uploaderId;  // ID of user who uploaded
-    private long uploadTime;
     private String sessionId;   // Reference to parent study session
 
     // Required empty constructor for Firebase
@@ -23,7 +22,6 @@ public class Resource {
         this.category = category;
         this.fileUrl = fileUrl;
         this.uploaderId = uploaderId;
-        this.uploadTime = uploadTime;
         this.sessionId = sessionId;
     }
 
@@ -74,14 +72,6 @@ public class Resource {
 
     public void setUploaderId(String uploaderId) {
         this.uploaderId = uploaderId;
-    }
-
-    public long getUploadTime() {
-        return uploadTime;
-    }
-
-    public void setUploadTime(long uploadTime) {
-        this.uploadTime = uploadTime;
     }
 
     public String getSessionId() {

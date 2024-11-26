@@ -16,8 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.studybuddy3.datatype.Course;
 import com.example.studybuddy3.datatype.User;
-import com.example.studybuddy3.loginsignup.LoginActivity;
-import com.example.studybuddy3.loginsignup.MainActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

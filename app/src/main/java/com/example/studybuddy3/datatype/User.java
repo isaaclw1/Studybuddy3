@@ -8,7 +8,6 @@ public class User {
     private String email;
     private String passwordHash;
     private List<String> enrolledCourses;
-    private long registrationDate;
 
     public User() {
         // Required empty constructor for Firebase
@@ -19,7 +18,6 @@ public class User {
         this.email = email;
         this.passwordHash = passwordHash;
         this.enrolledCourses = new ArrayList<>();
-        this.registrationDate = System.currentTimeMillis();
     }
 
     // Getters and Setters
@@ -55,11 +53,4 @@ public class User {
         this.enrolledCourses = enrolledCourses;
     }
 
-    public long getRegistrationDate() {
-        return registrationDate;
-    }
-
-    public void setRegistrationDate(long registrationDate) {
-        this.registrationDate = registrationDate;
-    }
 }

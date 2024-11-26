@@ -125,7 +125,7 @@ public class ResourceActivity extends AppCompatActivity {
                 });
     }
 
-    private void filterResources(String query) {
+    void filterResources(String query) {
         List<Resource> filteredList = new ArrayList<>();
         String lowerQuery = query.toLowerCase().trim();
 
@@ -146,6 +146,7 @@ public class ResourceActivity extends AppCompatActivity {
             resourceAdapter.setResources(filteredList);
         }
     }
+
 
     private class ResourceAdapter extends RecyclerView.Adapter<ResourceAdapter.ResourceViewHolder> {
         private List<Resource> resources = new ArrayList<>();

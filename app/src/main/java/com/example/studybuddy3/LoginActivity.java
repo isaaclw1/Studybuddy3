@@ -1,4 +1,4 @@
-package com.example.studybuddy3.loginsignup;
+package com.example.studybuddy3;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,8 +10,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.studybuddy3.PostLoginActivity;
-import com.example.studybuddy3.R;
 import com.example.studybuddy3.datatype.User;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -73,14 +71,14 @@ public class LoginActivity extends AppCompatActivity {
         attemptLogin(email, password);
     }
 
-    private boolean validateInputs(String email, String password) {
+    public boolean validateInputs(String email, String password) {
         if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, "Please enter a valid email address", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Please enter a valid email address", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -131,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    private String hashPassword(String password) {
+    public String hashPassword(String password) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
@@ -142,7 +140,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void saveUserSession(String userId, String email) {
+    public void saveUserSession(String userId, String email) {
         SharedPreferences prefs = getSharedPreferences("StudyBuddy", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("userId", userId);

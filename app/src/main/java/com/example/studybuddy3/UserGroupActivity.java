@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 // Firebase imports
 import com.example.studybuddy3.datatype.StudyGroup;
-import com.example.studybuddy3.loginsignup.LoginActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

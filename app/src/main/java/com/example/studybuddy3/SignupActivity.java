@@ -1,4 +1,4 @@
-package com.example.studybuddy3.loginsignup;
+package com.example.studybuddy3;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,7 +10,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.studybuddy3.R;
 import com.example.studybuddy3.datatype.Course;
 import com.example.studybuddy3.datatype.User;
 import com.google.android.material.button.MaterialButton;
@@ -40,6 +39,16 @@ public class SignupActivity extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
     private List<String> selectedCourses = new ArrayList<>();
+
+    public static class ValidationResult {
+        public final boolean isValid;
+        public final String errorMessage;
+
+        public ValidationResult(boolean isValid, String errorMessage) {
+            this.isValid = isValid;
+            this.errorMessage = errorMessage;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,7 +195,10 @@ public class SignupActivity extends AppCompatActivity {
         String password = passwordInput.getText().toString();
         String confirmPassword = confirmPasswordInput.getText().toString();
 
-        if (!validateInputs(email, password, confirmPassword)) {
+        ValidationResult result = validateInputs(email, password, confirmPassword, selectedCourses);
+
+        if (!result.isValid) {
+            Toast.makeText(this, result.errorMessage, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -194,33 +206,34 @@ public class SignupActivity extends AppCompatActivity {
         checkIfUserExists(email, password);
     }
 
-    private boolean validateInputs(String email, String password, String confirmPassword) {
+    public ValidationResult validateInputs(String email, String password, String confirmPassword, List<String> courses) {
         if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
-            return false;
+            return new ValidationResult(false, "Please fill in all fields");
         }
 
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, "Please enter a valid email address", Toast.LENGTH_SHORT).show();
-            return false;
+            return new ValidationResult(false, "Please enter a valid email address");
         }
 
         if (password.length() < 6) {
-            Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show();
-            return false;
+            return new ValidationResult(false, "Password must be at least 6 characters");
         }
 
         if (!password.equals(confirmPassword)) {
-            Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
-            return false;
+            return new ValidationResult(false, "Passwords do not match");
         }
 
-        if (selectedCourses.isEmpty()) {
-            Toast.makeText(this, "Please select at least one course", Toast.LENGTH_SHORT).show();
-            return false;
+        if (courses == null || courses.isEmpty()) {
+            return new ValidationResult(false, "Please select at least one course");
         }
 
-        return true;
+        return new ValidationResult(true, "Welcome!");
+    }
+
+
+    public boolean validateInputs(String email, String password, String confirmPassword) {
+        ValidationResult result = validateInputs(email, password, confirmPassword, selectedCourses);
+        return result.isValid;
     }
 
     private void checkIfUserExists(String email, String password) {
@@ -303,7 +316,7 @@ public class SignupActivity extends AppCompatActivity {
         }
     }
 
-    private String hashPassword(String password) {
+    public String hashPassword(String password) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
@@ -314,7 +327,7 @@ public class SignupActivity extends AppCompatActivity {
         }
     }
 
-    private void saveUserSession(String userId, String email) {
+    public void saveUserSession(String userId, String email) {
         SharedPreferences prefs = getSharedPreferences("StudyBuddy", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("userId", userId);
