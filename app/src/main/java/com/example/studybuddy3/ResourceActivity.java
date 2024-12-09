@@ -1,6 +1,7 @@
 package com.example.studybuddy3;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,11 +25,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class ResourceActivity extends AppCompatActivity {
     private TextInputEditText searchInput;
@@ -80,7 +78,7 @@ public class ResourceActivity extends AppCompatActivity {
     private void setupSearchInput() {
         searchInput.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -88,7 +86,7 @@ public class ResourceActivity extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) { }
         });
     }
 
@@ -147,7 +145,6 @@ public class ResourceActivity extends AppCompatActivity {
         }
     }
 
-
     private class ResourceAdapter extends RecyclerView.Adapter<ResourceAdapter.ResourceViewHolder> {
         private List<Resource> resources = new ArrayList<>();
 
@@ -169,12 +166,24 @@ public class ResourceActivity extends AppCompatActivity {
             Resource resource = resources.get(position);
             holder.bind(resource);
 
+            // Open PDF in external viewer instead of ResourceViewActivity
             holder.viewButton.setOnClickListener(v -> {
-                Intent intent = new Intent(ResourceActivity.this, ResourceViewActivity.class);
-                intent.putExtra("resourceId", resource.getResourceId());
-                intent.putExtra("sessionId", sessionId);
-                intent.putExtra("groupId", groupId);
-                startActivity(intent);
+                String pdfUrl = resource.getFileUrl();
+                if (pdfUrl == null || pdfUrl.isEmpty()) {
+                    Toast.makeText(ResourceActivity.this, "No file URL available.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.parse(pdfUrl), "application/pdf");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+
+                Intent chooser = Intent.createChooser(intent, "Open PDF");
+                try {
+                    startActivity(chooser);
+                } catch (Exception e) {
+                    Toast.makeText(ResourceActivity.this, "No PDF viewer found.", Toast.LENGTH_SHORT).show();
+                }
             });
         }
 

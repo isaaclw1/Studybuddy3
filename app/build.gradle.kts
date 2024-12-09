@@ -43,6 +43,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.database)
+    implementation(libs.firebase.storage)
     implementation(libs.androidx.espresso.intents)
     implementation(libs.androidx.espresso.contrib)
     testImplementation(libs.junit)

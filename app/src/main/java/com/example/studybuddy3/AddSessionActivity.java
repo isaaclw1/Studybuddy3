@@ -89,7 +89,7 @@ public class AddSessionActivity extends AppCompatActivity {
         Calendar minDate = Calendar.getInstance();
         minDate.set(2024, Calendar.NOVEMBER, 1);
         Calendar maxDate = Calendar.getInstance();
-        maxDate.set(2024, Calendar.NOVEMBER, 30);
+        maxDate.set(2025, Calendar.JANUARY, 31);
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 this,

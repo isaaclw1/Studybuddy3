@@ -26,11 +26,18 @@
         android:layout_height="wrap_content"
         android:hint="Category (e.g., Lecture Notes, Practice Exams)" />
 
-    <EditText
-        android:id="@+id/resourceUrlInput"
+    <Button
+        android:id="@+id/chooseFileButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="File URL" />
+        android:text="Choose PDF File" />
+
+    <TextView
+        android:id="@+id/chosenFileText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No file chosen"
+        android:paddingTop="8dp" />
 
     <Button
         android:id="@+id/uploadResourceButton"
