@@ -1,13 +1,17 @@
 package com.example.studybuddy3;
 
-import android.content.SharedPreferences;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,33 +29,36 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import android.widget.TextView;
-
-
 public class ChatActivity extends AppCompatActivity {
+    private static final int PDF_FILE_PICKER = 2001; // request code for PDF pick
+
     private TextView groupNameText;
     private MaterialButton selectRecipientButton;
     private RecyclerView messagesRecyclerView;
     private TextInputEditText messageEditText;
     private MaterialButton sendButton;
+    private MaterialButton uploadPdfButton; // New button for PDF upload
 
     private DatabaseReference mDatabase;
     private String groupId;
     private String userId;
     private StudyGroup currentGroup;
-    private String currentRecipientId = "group"; // "group" for group chat, userId for individual
+    private String currentRecipientId = "group";
     private MessageAdapter messageAdapter;
-    private String userEmail; // Current user's email
+    private String userEmail;
+
+    private Uri selectedPdfUri = null;  // To hold the selected PDF file URI
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,9 +87,38 @@ public class ChatActivity extends AppCompatActivity {
         messagesRecyclerView = findViewById(R.id.messagesRecyclerView);
         messageEditText = findViewById(R.id.messageEditText);
         sendButton = findViewById(R.id.sendButton);
+        uploadPdfButton = findViewById(R.id.uploadPdfButton); // Assume you added this to layout
 
         selectRecipientButton.setOnClickListener(v -> showRecipientSelectionDialog());
-        sendButton.setOnClickListener(v -> sendMessage());
+        sendButton.setOnClickListener(v -> {
+            // If a PDF is selected, send it as a PDF message
+            if (selectedPdfUri != null) {
+                uploadPdfAndSendMessage();
+            } else {
+                sendMessage();
+            }
+        });
+
+        uploadPdfButton.setOnClickListener(v -> pickPdfFile());
+    }
+
+    private void pickPdfFile() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("application/pdf");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(Intent.createChooser(intent, "Select PDF"), PDF_FILE_PICKER);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PDF_FILE_PICKER && resultCode == RESULT_OK && data != null) {
+            selectedPdfUri = data.getData();
+            if (selectedPdfUri != null) {
+                Toast.makeText(this, "PDF selected", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void setupRecyclerView() {
@@ -178,8 +214,8 @@ public class ChatActivity extends AppCompatActivity {
 
     private void loadMessages() {
         if (currentRecipientId.equals("group")) {
-            // Loading group chat messages
             mDatabase.child("groupChats").child(groupId)
+                    .orderByChild("timestamp")
                     .addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -193,24 +229,13 @@ public class ChatActivity extends AppCompatActivity {
                         }
                     });
         } else {
-            // Loading private messages between current user and selected recipient
-            String chatKey = getChatKey(userId, currentRecipientId); // Unique key for the chat
+            String chatKey = getChatKey(userId, currentRecipientId);
             DatabaseReference privateChatsRef = mDatabase.child("privateChats").child(groupId).child(chatKey);
             privateChatsRef.orderByChild("timestamp")
                     .addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            List<ChatMessage> messages = new ArrayList<>();
-                            for (DataSnapshot messageSnap : snapshot.getChildren()) {
-                                ChatMessage message = messageSnap.getValue(ChatMessage.class);
-                                if (message != null) {
-                                    messages.add(message);
-                                }
-                            }
-                            messageAdapter.setMessages(messages);
-                            if (!messages.isEmpty()) {
-                                messagesRecyclerView.scrollToPosition(messages.size() - 1);
-                            }
+                            processChatMessages(snapshot);
                         }
 
                         @Override
@@ -221,7 +246,6 @@ public class ChatActivity extends AppCompatActivity {
                     });
         }
     }
-
 
     private void processChatMessages(@NonNull DataSnapshot snapshot) {
         List<ChatMessage> messages = new ArrayList<>();
@@ -238,7 +262,6 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private String getChatKey(String user1Id, String user2Id) {
-        // Consistently create the same key regardless of who is sender/recipient
         return user1Id.compareTo(user2Id) < 0
                 ? user1Id + "_" + user2Id
                 : user2Id + "_" + user1Id;
@@ -252,7 +275,6 @@ public class ChatActivity extends AppCompatActivity {
         DatabaseReference messagesRef;
 
         if (currentRecipientId.equals("group")) {
-            // Sending a group message
             messagesRef = mDatabase.child("groupChats").child(groupId);
             messageId = messagesRef.push().getKey();
             if (messageId == null) return;
@@ -260,23 +282,22 @@ public class ChatActivity extends AppCompatActivity {
             ChatMessage message = new ChatMessage(
                     messageId,
                     userId,
-                    "group", // Receiver ID is "group" for group messages
+                    "group",
                     userEmail,
                     messageText,
-                    System.currentTimeMillis()
+                    System.currentTimeMillis(),
+                    null // No PDF URL
             );
 
             messagesRef.child(messageId).setValue(message)
                     .addOnSuccessListener(aVoid -> {
-                        messageEditText.setText(""); // Clear input field on success
+                        messageEditText.setText("");
                     })
                     .addOnFailureListener(e ->
                             Toast.makeText(ChatActivity.this,
-                                    "Failed to send message", Toast.LENGTH_SHORT).show()
-                    );
+                                    "Failed to send message", Toast.LENGTH_SHORT).show());
         } else {
-            // Sending a private message
-            String chatKey = getChatKey(userId, currentRecipientId); // Unique key for the chat
+            String chatKey = getChatKey(userId, currentRecipientId);
             messagesRef = mDatabase.child("privateChats").child(groupId).child(chatKey);
             messageId = messagesRef.push().getKey();
             if (messageId == null) return;
@@ -284,23 +305,79 @@ public class ChatActivity extends AppCompatActivity {
             ChatMessage message = new ChatMessage(
                     messageId,
                     userId,
-                    currentRecipientId, // Set the receiver ID to the selected recipient
+                    currentRecipientId,
                     userEmail,
                     messageText,
-                    System.currentTimeMillis()
+                    System.currentTimeMillis(),
+                    null
             );
 
             messagesRef.child(messageId).setValue(message)
                     .addOnSuccessListener(aVoid -> {
-                        messageEditText.setText(""); // Clear input field on success
+                        messageEditText.setText("");
                     })
                     .addOnFailureListener(e ->
                             Toast.makeText(ChatActivity.this,
-                                    "Failed to send message", Toast.LENGTH_SHORT).show()
-                    );
+                                    "Failed to send message", Toast.LENGTH_SHORT).show());
         }
+
+        // Clear the selected PDF if any, since we just sent a text message
+        selectedPdfUri = null;
     }
 
+    private void uploadPdfAndSendMessage() {
+        if (selectedPdfUri == null) return;
+
+        String messageId;
+        DatabaseReference messagesRef;
+
+        if (currentRecipientId.equals("group")) {
+            messagesRef = mDatabase.child("groupChats").child(groupId);
+            messageId = messagesRef.push().getKey();
+        } else {
+            String chatKey = getChatKey(userId, currentRecipientId);
+            messagesRef = mDatabase.child("privateChats").child(groupId).child(chatKey);
+            messageId = messagesRef.push().getKey();
+        }
+
+        if (messageId == null) return;
+
+        // Upload PDF to Firebase Storage
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference()
+                .child("chat_pdfs").child(groupId).child(messageId + ".pdf");
+
+        storageRef.putFile(selectedPdfUri)
+                .addOnSuccessListener(taskSnapshot -> storageRef.getDownloadUrl()
+                        .addOnSuccessListener(uri -> {
+                            // Create ChatMessage with pdfUrl
+                            ChatMessage message = new ChatMessage(
+                                    messageId,
+                                    userId,
+                                    currentRecipientId,
+                                    userEmail,
+                                    "", // No text content, only PDF
+                                    System.currentTimeMillis(),
+                                    uri.toString()
+                            );
+
+                            messagesRef.child(messageId).setValue(message)
+                                    .addOnSuccessListener(aVoid -> {
+                                        Toast.makeText(ChatActivity.this,
+                                                "PDF sent successfully", Toast.LENGTH_SHORT).show();
+                                        messageEditText.setText("");
+                                        selectedPdfUri = null;
+                                    })
+                                    .addOnFailureListener(e ->
+                                            Toast.makeText(ChatActivity.this,
+                                                    "Failed to send PDF message", Toast.LENGTH_SHORT).show());
+                        })
+                        .addOnFailureListener(e ->
+                                Toast.makeText(ChatActivity.this,
+                                        "Failed to get PDF URL", Toast.LENGTH_SHORT).show()))
+                .addOnFailureListener(e ->
+                        Toast.makeText(ChatActivity.this,
+                                "PDF upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
 
     private static class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
         private List<ChatMessage> messages = new ArrayList<>();
@@ -348,11 +425,9 @@ public class ChatActivity extends AppCompatActivity {
 
             void bind(ChatMessage message, boolean isCurrentUser) {
                 senderText.setText(message.getSenderEmail());
-                messageText.setText(message.getContent());
                 timeText.setText(new SimpleDateFormat("MMM dd, HH:mm",
                         Locale.getDefault()).format(new Date(message.getTimestamp())));
 
-                // Align messages right for current user, left for others
                 LinearLayout.LayoutParams params =
                         (LinearLayout.LayoutParams) messageCard.getLayoutParams();
                 if (isCurrentUser) {
@@ -365,6 +440,30 @@ public class ChatActivity extends AppCompatActivity {
                             itemView.getContext().getColor(android.R.color.white));
                 }
                 messageCard.setLayoutParams(params);
+
+                // Check if this is a PDF message or a text message
+                if (message.getPdfUrl() != null && !message.getPdfUrl().isEmpty()) {
+                    // PDF message
+                    messageText.setText("View PDF");
+                    messageText.setTextColor(itemView.getContext().getColor(android.R.color.holo_red_dark));
+                    messageText.setOnClickListener(v -> {
+                        // Open PDF in external viewer
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setDataAndType(Uri.parse(message.getPdfUrl()), "application/pdf");
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                        try {
+                            itemView.getContext().startActivity(intent);
+                        } catch (Exception e) {
+                            Toast.makeText(itemView.getContext(),
+                                    "No PDF viewer found.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    // Normal text message
+                    messageText.setText(message.getContent());
+                    messageText.setTextColor(itemView.getContext().getColor(android.R.color.black));
+                    messageText.setOnClickListener(null);
+                }
             }
         }
     }
