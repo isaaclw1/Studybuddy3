@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/background_color">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -11,6 +12,7 @@
         android:layout_marginHorizontal="16dp"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
+        app:cardBackgroundColor="#AD8BE9"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.3">
@@ -28,7 +30,8 @@
                 android:text="Registration Form"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                android:layout_marginBottom="24dp"/>
+                android:layout_marginBottom="24dp"
+                android:textColor="@android:color/white" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/emailLayout"
@@ -42,7 +45,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Email"
-                    android:inputType="textEmailAddress"/>
+                    android:inputType="textEmailAddress" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -58,7 +61,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Password"
-                    android:inputType="textPassword"/>
+                    android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -74,14 +77,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Confirm Password"
-                    android:inputType="textPassword"/>
+                    android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/courseChipGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"/>
+                android:layout_marginBottom="16dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -106,7 +109,8 @@
                         android:contentDescription="Add Courses Button"
                         android:maxWidth="48dp"
                         android:maxHeight="48dp"
-                        android:src="@drawable/ic_spinner" />
+                        android:src="@drawable/ic_spinner"
+                        app:tint="@android:color/white" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -114,7 +118,8 @@
                         android:gravity="center"
                         android:text="Add Courses"
                         android:textSize="16sp"
-                        android:layout_marginTop="4dp"/>
+                        android:layout_marginTop="4dp"
+                        android:textColor="@android:color/white" />
                 </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton
@@ -122,16 +127,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Register"
-                    android:layout_gravity="center" />
+                    android:backgroundTint="@color/secondary_color"
+                    android:textColor="@android:color/white" />
             </LinearLayout>
-
 
             <ProgressBar
                 android:id="@+id/progressBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
         </LinearLayout>
 

@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/background_color">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/nameCard"
@@ -12,6 +13,7 @@
         android:layout_marginTop="32dp"
         app:cardCornerRadius="25dp"
         app:cardElevation="4dp"
+        app:cardBackgroundColor="@color/primary_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -23,7 +25,7 @@
             android:paddingHorizontal="32dp"
             android:paddingVertical="16dp"
             android:textAlignment="center"
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/white"
             android:textSize="24sp"
             android:textStyle="bold" />
 
@@ -36,6 +38,8 @@
         android:padding="16dp"
         android:text="My Groups"
         android:textSize="18sp"
+        android:backgroundTint="@color/secondary_color"
+        android:textColor="@android:color/white"
         app:cornerRadius="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,6 +53,8 @@
         android:layout_marginBottom="32dp"
         android:text="Log Out"
         android:textSize="16sp"
+        android:backgroundTint="@color/secondary_color"
+        android:textColor="@android:color/white"
         app:cornerRadius="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

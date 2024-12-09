@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/background_color">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/coursesCard"
@@ -12,6 +13,7 @@
         android:layout_marginBottom="16dp"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
+        app:cardBackgroundColor="@color/primary_color"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/buttonLayout">
 
@@ -23,11 +25,11 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/darker_gray"
+                android:background="@color/secondary_color"
                 android:padding="16dp"
                 android:text="Enrolled Courses"
                 android:textAlignment="center"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -35,7 +37,8 @@
                 android:id="@+id/coursesRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="8dp" />
+                android:padding="8dp"
+                android:background="@color/background_color" />
 
         </LinearLayout>
 
@@ -55,7 +58,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
-            android:text="Home Screen" />
+            android:text="Home Screen"
+            android:backgroundTint="@color/secondary_color"
+            android:textColor="@android:color/white" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/logoutButton"
@@ -63,7 +68,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
-            android:text="Log Out" />
+            android:text="Log Out"
+            android:backgroundTint="@color/secondary_color"
+            android:textColor="@android:color/white" />
 
     </LinearLayout>
 

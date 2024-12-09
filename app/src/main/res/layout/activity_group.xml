@@ -2,18 +2,19 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background_color">
 
     <!-- Header -->
     <TextView
         android:id="@+id/groupNameText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/darker_gray"
+        android:background="@color/primary_color"
         android:padding="16dp"
         android:text="Group Name"
         android:textAlignment="center"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/white"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent" />
@@ -27,6 +28,7 @@
         android:text="Member List"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:textColor="@color/primary_color"
         app:layout_constraintTop_toBottomOf="@id/groupNameText" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -53,7 +55,9 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:text="Chat Box" />
+            android:text="Chat Box"
+            android:backgroundTint="@color/secondary_color"
+            android:textColor="@android:color/white" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/calendarButton"
@@ -61,7 +65,9 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="4dp"
             android:layout_weight="1"
-            android:text="Group Calendar" />
+            android:text="Group Calendar"
+            android:backgroundTint="@color/secondary_color"
+            android:textColor="@android:color/white" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/addSessionButton"
@@ -69,7 +75,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
-            android:text="Add Session" />
+            android:text="Add Session"
+            android:backgroundTint="@color/secondary_color"
+            android:textColor="@android:color/white" />
 
     </LinearLayout>
 
