@@ -9,3 +9,4 @@ App Running Instructions:
 8. The calendar will show all the study sessions, if clicked, it will direct you to information about that specific study session.
 9. The study session page will have a resources tab, that allows users to either add a resource, or view a resource.
 
+Improvements that have been made since 2.4 are the Introduction of PDF uploads for resources and chat messages, along with improvements of the GUI through a two-toned color scheme.
